@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin</title>
+<style>
+  * { box-sizing:border-box; }
+  body { font-family:'Segoe UI', Arial, sans-serif; background:#f4f2ee; padding:32px 20px 80px; max-width:820px; margin:0 auto; color:#2b2b2b; }
+  h1 { font-size:22px; margin-bottom:4px; }
+  .sub { color:#888; font-size:13px; margin-bottom:24px; }
+  label { display:block; font-size:12px; color:#666; margin:12px 0 4px; text-transform:uppercase; letter-spacing:.5px; }
+  input[type=text], textarea { width:100%; padding:9px; border:1px solid #ddd; border-radius:6px; font-size:14px; background:#fff; }
+  textarea { resize:vertical; min-height:60px; }
+  .card { border:1px solid #e2ddd3; padding:16px; border-radius:8px; margin-top:12px; background:#fff; }
+  .row { display:flex; gap:8px; align-items:center; margin-bottom:6px; flex-wrap:wrap; }
+  .row button { padding:4px 9px; font-size:11px; border:none; border-radius:4px; cursor:pointer; background:#eee; }
+  .remove { background:#f3d3d3 !important; }
+  .actions { margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; }
+  button.main { padding:11px 18px; border:none; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; }
+  .add-btn { background:#d9c78f; }
+  #save { background:#1a1a1a; color:#fff; }
+  #status { margin-top:12px; font-size:13px; color:#2d6a3e; }
+  a.back { display:inline-block; margin-bottom:14px; font-size:13px; color:#555; }
+  .section-title { margin-top:32px; font-size:17px; border-bottom:2px solid #d9c78f; padding-bottom:8px; }
+  .avatar-row { display:flex; align-items:center; gap:14px; margin-top:6px; }
+  .avatar-preview { width:70px; height:70px; border-radius:50%; object-fit:cover; background:#eee; border:1px solid #ddd; }
+  .skill-row { display:flex; gap:8px; align-items:center; margin-top:6px; }
+</style>
+</head>
+<body>
+
+<a class="back" href="index.html">&larr; Back to site</a>
+<h1>Admin — Edit Portfolio</h1>
+<div class="sub">Edits are downloaded as content.json. Replace the file in your site folder (and re-upload to GitHub) to publish.</div>
+
+<label>Hero / Profile Image</label>
+<div class="avatar-row">
+  <img class="avatar-preview" id="avatarPreview">
+  <input type="file" accept="image/*" id="avatarFile">
+</div>
+
+<label>Full Name</label>
+<input type="text" id="name">
+<label>Professional Title</label>
+<input type="text" id="title">
+<label>Location</label>
+<input type="text" id="location">
+<label>Bio / Summary</label>
+<textarea id="bio"></textarea>
+<label>Contact Email</label>
+<input type="text" id="email">
+
+<label>Hero Headline (e.g. "Clear Stories. Real Impact.")</label>
+<input type="text" id="headline">
+<label>Word/phrase in headline to highlight in accent color</label>
+<input type="text" id="headlineHighlight">
+<label>CTA Button Text</label>
+<input type="text" id="ctaText">
+
+<h2 class="section-title">Social Links</h2>
+<label>LinkedIn URL</label>
+<input type="text" id="socialLinkedin">
+<label>Instagram URL</label>
+<input type="text" id="socialInstagram">
+<label>Twitter/X URL</label>
+<input type="text" id="socialTwitter">
+
+<h2 class="section-title">Skills</h2>
+<div id="skills"></div>
+<div class="actions"><button class="main add-btn" id="addSkill">+ Add Skill</button></div>
+
+<h2 class="section-title">Publications</h2>
+<div id="publications"></div>
+<div class="actions"><button class="main add-btn" id="addPublication">+ Add Publication</button></div>
+
+<h2 class="section-title">Experience</h2>
+<div id="experience"></div>
+<div class="actions"><button class="main add-btn" id="addExperience">+ Add Experience</button></div>
+
+<h2 class="section-title">Projects</h2>
+<div id="projects"></div>
+<div class="actions"><button class="main add-btn" id="addProject">+ Add Project</button></div>
+
+<h2 class="section-title">Education</h2>
+<div id="education"></div>
+<div class="actions"><button class="main add-btn" id="addEducation">+ Add Education</button></div>
+
+<div class="actions">
+  <button class="main" id="save">Download content.json</button>
+</div>
+<div id="status"></div>
+
+<script>
+let data = null;
+let idCounter = 1000;
+const newId = () => 'id' + (idCounter++);
+
+function fileToDataURL(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+
+async function load() {
+  const res = await fetch('content.json?t=' + Date.now());
+  data = await res.json();
+  document.getElementById('name').value = data.name || '';
+  document.getElementById('title').value = data.title || '';
+  document.getElementById('location').value = data.location || '';
+  document.getElementById('bio').value = data.bio || '';
+  document.getElementById('email').value = data.email || '';
+  document.getElementById('headline').value = data.headline || '';
+  document.getElementById('headlineHighlight').value = data.headlineHighlight || '';
+  document.getElementById('ctaText').value = data.ctaText || "LET'S CONNECT";
+  data.socials = data.socials || {};
+  document.getElementById('socialLinkedin').value = data.socials.linkedin || '';
+  document.getElementById('socialInstagram').value = data.socials.instagram || '';
+  document.getElementById('socialTwitter').value = data.socials.twitter || '';
+  if (data.profileImage) document.getElementById('avatarPreview').src = data.profileImage;
+
+  data.skills = data.skills || [];
+  data.publications = data.publications || [];
+  data.experience = data.experience || [];
+  data.projects = data.projects || [];
+  data.education = data.education || [];
+
+  renderSkills();
+  renderPublications();
+  renderExperience();
+  renderProjects();
+  renderEducation();
+}
+
+document.getElementById('avatarFile').onchange = async (e) => {
+  if (!e.target.files[0]) return;
+  data.profileImage = await fileToDataURL(e.target.files[0]);
+  document.getElementById('avatarPreview').src = data.profileImage;
+};
+
+function renderSkills() {
+  const c = document.getElementById('skills');
+  c.innerHTML = '';
+  data.skills.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'skill-row';
+    div.innerHTML = `
+      <input type="text" class="skill-name" data-i="${i}" value="${(s.name||'').replace(/"/g,'&quot;')}" style="flex:1;">
+      <button class="remove" data-i="${i}">Remove</button>
+    `;
+    c.appendChild(div);
+  });
+  c.querySelectorAll('.remove').forEach(btn => {
+    btn.onclick = () => { data.skills.splice(+btn.dataset.i, 1); renderSkills(); };
+  });
+}
+
+document.getElementById('addSkill').onclick = () => {
+  data.skills.push({ id: newId(), name: 'New Skill' });
+  renderSkills();
+};
+
+function renderPublications() {
+  const c = document.getElementById('publications');
+  c.innerHTML = '';
+  data.publications.forEach((pub, i) => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
+      <div class="row"><button class="remove" data-i="${i}">Remove</button></div>
+      <label>Title</label>
+      <input type="text" class="pub-title" data-i="${i}" value="${(pub.title||'').replace(/"/g,'&quot;')}">
+      <label>Publisher (optional)</label>
+      <input type="text" class="pub-publisher" data-i="${i}" value="${(pub.publisher||'').replace(/"/g,'&quot;')}">
+      <label>Date</label>
+      <input type="text" class="pub-date" data-i="${i}" value="${(pub.date||'').replace(/"/g,'&quot;')}">
+      <label>Description (optional)</label>
+      <textarea class="pub-description" data-i="${i}">${pub.description||''}</textarea>
+      <label>Link (optional)</label>
+      <input type="text" class="pub-link" data-i="${i}" value="${(pub.link||'').replace(/"/g,'&quot;')}">
+    `;
+    c.appendChild(div);
+  });
+  c.querySelectorAll('.remove').forEach(btn => {
+    btn.onclick = () => { data.publications.splice(+btn.dataset.i, 1); renderPublications(); };
+  });
+}
+
+document.getElementById('addPublication').onclick = () => {
+  data.publications.unshift({ id: newId(), title: 'New Publication', publisher: '', date: '', description: '', link: '' });
+  renderPublications();
+};
+
+function renderExperience() {
+  const c = document.getElementById('experience');
+  c.innerHTML = '';
+  data.experience.forEach((x, i) => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
+      <div class="row"><button class="remove" data-i="${i}">Remove</button></div>
+      <label>Role</label>
+      <input type="text" class="x-role" data-i="${i}" value="${(x.role||'').replace(/"/g,'&quot;')}">
+      <label>Company</label>
+      <input type="text" class="x-company" data-i="${i}" value="${(x.company||'').replace(/"/g,'&quot;')}">
+      <label>Type (e.g. Full-time, Contract)</label>
+      <input type="text" class="x-type" data-i="${i}" value="${(x.type||'').replace(/"/g,'&quot;')}">
+      <label>Dates</label>
+      <input type="text" class="x-dates" data-i="${i}" value="${(x.dates||'').replace(/"/g,'&quot;')}">
+      <label>Location</label>
+      <input type="text" class="x-location" data-i="${i}" value="${(x.location||'').replace(/"/g,'&quot;')}">
+      <label>Description</label>
+      <textarea class="x-description" data-i="${i}">${x.description||''}</textarea>
+    `;
+    c.appendChild(div);
+  });
+  c.querySelectorAll('.remove').forEach(btn => {
+    btn.onclick = () => { data.experience.splice(+btn.dataset.i, 1); renderExperience(); };
+  });
+}
+
+document.getElementById('addExperience').onclick = () => {
+  data.experience.unshift({ id: newId(), role: 'New Role', company: '', type: '', dates: '', location: '', description: '' });
+  renderExperience();
+};
+
+function renderProjects() {
+  const c = document.getElementById('projects');
+  c.innerHTML = '';
+  data.projects.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
+      <div class="row"><button class="remove" data-i="${i}">Remove</button></div>
+      <label>Title</label>
+      <input type="text" class="p-title" data-i="${i}" value="${(p.title||'').replace(/"/g,'&quot;')}">
+      <label>Organisation</label>
+      <input type="text" class="p-org" data-i="${i}" value="${(p.org||'').replace(/"/g,'&quot;')}">
+      <label>Dates</label>
+      <input type="text" class="p-dates" data-i="${i}" value="${(p.dates||'').replace(/"/g,'&quot;')}">
+      <label>Description</label>
+      <textarea class="p-description" data-i="${i}">${p.description||''}</textarea>
+      <label>Link (optional)</label>
+      <input type="text" class="p-link" data-i="${i}" value="${(p.link||'').replace(/"/g,'&quot;')}">
+      <label>Project Image</label>
+      <div class="avatar-row">
+        <img class="avatar-preview p-image-preview" data-i="${i}" src="${p.image||''}">
+        <input type="file" accept="image/*" class="p-image-file" data-i="${i}">
+      </div>
+    `;
+    c.appendChild(div);
+  });
+  c.querySelectorAll('.remove').forEach(btn => {
+    btn.onclick = () => { data.projects.splice(+btn.dataset.i, 1); renderProjects(); };
+  });
+  c.querySelectorAll('.p-image-file').forEach(input => {
+    input.onchange = async (e) => {
+      if (!e.target.files[0]) return;
+      const url = await fileToDataURL(e.target.files[0]);
+      data.projects[+input.dataset.i].image = url;
+      c.querySelector(`.p-image-preview[data-i="${input.dataset.i}"]`).src = url;
+    };
+  });
+}
+
+document.getElementById('addProject').onclick = () => {
+  data.projects.unshift({ id: newId(), title: 'New Project', org: '', dates: '', description: '', link: '', image: '' });
+  renderProjects();
+};
+
+function renderEducation() {
+  const c = document.getElementById('education');
+  c.innerHTML = '';
+  data.education.forEach((e, i) => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
+      <div class="row"><button class="remove" data-i="${i}">Remove</button></div>
+      <label>School</label>
+      <input type="text" class="e-school" data-i="${i}" value="${(e.school||'').replace(/"/g,'&quot;')}">
+      <label>Degree</label>
+      <input type="text" class="e-degree" data-i="${i}" value="${(e.degree||'').replace(/"/g,'&quot;')}">
+      <label>Years</label>
+      <input type="text" class="e-years" data-i="${i}" value="${(e.years||'').replace(/"/g,'&quot;')}">
+    `;
+    c.appendChild(div);
+  });
+  c.querySelectorAll('.remove').forEach(btn => {
+    btn.onclick = () => { data.education.splice(+btn.dataset.i, 1); renderEducation(); };
+  });
+}
+
+document.getElementById('addEducation').onclick = () => {
+  data.education.unshift({ id: newId(), school: 'New School', degree: '', years: '' });
+  renderEducation();
+};
+
+function collect() {
+  data.name = document.getElementById('name').value;
+  data.title = document.getElementById('title').value;
+  data.location = document.getElementById('location').value;
+  data.bio = document.getElementById('bio').value;
+  data.email = document.getElementById('email').value;
+  data.headline = document.getElementById('headline').value;
+  data.headlineHighlight = document.getElementById('headlineHighlight').value;
+  data.ctaText = document.getElementById('ctaText').value;
+  data.socials = {
+    linkedin: document.getElementById('socialLinkedin').value,
+    instagram: document.getElementById('socialInstagram').value,
+    twitter: document.getElementById('socialTwitter').value,
+  };
+
+  document.querySelectorAll('.skill-name').forEach(el => data.skills[+el.dataset.i].name = el.value);
+
+  document.querySelectorAll('.pub-title').forEach(el => data.publications[+el.dataset.i].title = el.value);
+  document.querySelectorAll('.pub-publisher').forEach(el => data.publications[+el.dataset.i].publisher = el.value);
+  document.querySelectorAll('.pub-date').forEach(el => data.publications[+el.dataset.i].date = el.value);
+  document.querySelectorAll('.pub-description').forEach(el => data.publications[+el.dataset.i].description = el.value);
+  document.querySelectorAll('.pub-link').forEach(el => data.publications[+el.dataset.i].link = el.value);
+
+  document.querySelectorAll('.x-role').forEach(el => data.experience[+el.dataset.i].role = el.value);
+  document.querySelectorAll('.x-company').forEach(el => data.experience[+el.dataset.i].company = el.value);
+  document.querySelectorAll('.x-type').forEach(el => data.experience[+el.dataset.i].type = el.value);
+  document.querySelectorAll('.x-dates').forEach(el => data.experience[+el.dataset.i].dates = el.value);
+  document.querySelectorAll('.x-location').forEach(el => data.experience[+el.dataset.i].location = el.value);
+  document.querySelectorAll('.x-description').forEach(el => data.experience[+el.dataset.i].description = el.value);
+
+  document.querySelectorAll('.p-title').forEach(el => data.projects[+el.dataset.i].title = el.value);
+  document.querySelectorAll('.p-org').forEach(el => data.projects[+el.dataset.i].org = el.value);
+  document.querySelectorAll('.p-dates').forEach(el => data.projects[+el.dataset.i].dates = el.value);
+  document.querySelectorAll('.p-description').forEach(el => data.projects[+el.dataset.i].description = el.value);
+  document.querySelectorAll('.p-link').forEach(el => data.projects[+el.dataset.i].link = el.value);
+
+  document.querySelectorAll('.e-school').forEach(el => data.education[+el.dataset.i].school = el.value);
+  document.querySelectorAll('.e-degree').forEach(el => data.education[+el.dataset.i].degree = el.value);
+  document.querySelectorAll('.e-years').forEach(el => data.education[+el.dataset.i].years = el.value);
+}
+
+document.getElementById('save').onclick = () => {
+  collect();
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'content.json'; a.click();
+  document.getElementById('status').textContent = 'Downloaded — replace content.json in your site folder, then commit & push.';
+};
+
+load();
+</script>
+
+</body>
+</html>

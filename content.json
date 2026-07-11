@@ -1,0 +1,208 @@
+{
+  "name": "Your Name",
+  "title": "Freelance Journalist & Communications Consultant",
+  "bio": "Freelance journalist and communications consultant with experience spanning investigative reporting, media consulting for UN agencies, strategic communications, and creative writing. MSt in Creative Writing from the University of Oxford.",
+  "email": "you@example.com",
+  "location": "Kampala, Uganda",
+  "profileImage": "",
+  "skills": [
+    {
+      "id": "s1",
+      "name": "Investigative Research & Reporting"
+    },
+    {
+      "id": "s2",
+      "name": "Storytelling & Content Development"
+    },
+    {
+      "id": "s3",
+      "name": "Behaviour Change Communication (BCC)"
+    },
+    {
+      "id": "s4",
+      "name": "Stakeholder Engagement"
+    },
+    {
+      "id": "s5",
+      "name": "Strategic Communications"
+    },
+    {
+      "id": "s6",
+      "name": "Advocacy"
+    },
+    {
+      "id": "s7",
+      "name": "Regional Economic Reporting (East Africa)"
+    },
+    {
+      "id": "s8",
+      "name": "Media Relations & Source Development"
+    },
+    {
+      "id": "s9",
+      "name": "Research & Writing"
+    },
+    {
+      "id": "s10",
+      "name": "Afro-Diaspora Advocacy"
+    },
+    {
+      "id": "s11",
+      "name": "Pitch Development"
+    },
+    {
+      "id": "s12",
+      "name": "Cross-Continental Research"
+    },
+    {
+      "id": "s13",
+      "name": "Gender-Responsive & Inclusive Research Design"
+    },
+    {
+      "id": "s14",
+      "name": "Social Media Marketing"
+    }
+  ],
+  "education": [
+    {
+      "id": "e1",
+      "school": "Oxford Lifelong Learning, University of Oxford",
+      "degree": "MSt in Creative Writing, Creative Writing",
+      "years": "2017 \u2013 2019"
+    },
+    {
+      "id": "e2",
+      "school": "Macquarie University",
+      "degree": "MEDIA, Creative Writing, Documentary writing, Australian media, Media cultures",
+      "years": "2013 \u2013 2015"
+    }
+  ],
+  "experience": [
+    {
+      "id": "x1",
+      "role": "International Story Scout",
+      "company": "Luminary",
+      "type": "Contract",
+      "dates": "Feb 2023 \u2013 Aug 2023 \u00b7 7 mos",
+      "location": "Kampala, Uganda (Remote for San Francisco Bay Area-based team) \u00b7 Remote",
+      "description": "Served as Africa correspondent for Spooked, an award-winning radio show and podcast broadcast on over 500 public radio stations, sourcing and pitching compelling true-life stories from across the continent. Leveraged extensive networks of contacts and journalists in Uganda, Ghana, South Africa, Malawi, and beyond. Curated diverse, impactful content that enriched the program's global reach and showcased African perspectives, while conducting fact-checking and providing background materials."
+    },
+    {
+      "id": "x2",
+      "role": "Berlin Writer in Residence",
+      "company": "DEKOLONIALE Memory Culture in the City",
+      "type": "Contract",
+      "dates": "Jun 2022 \u2013 Aug 2022 \u00b7 3 mos",
+      "location": "Berlin, Germany \u00b7 On-site",
+      "description": "Selected as the 2022 Berlin Dekoloniale writing resident, spending three months in Germany using research and interviews to juxtapose Black anti-colonial grassroots activism of the 1930s with contemporary identity and activism in modern Berlin, resulting in a staged reading of debut theatre play 'Greetings from Afar' featured on Deutschlandfunk Kultur and European festivals, and an artistic intervention on migration biases coordinating intercultural teams of actors and designers to co-produce the live performance, with recordings still used in Afro-Diaspora intervention spaces. The project was funded by the Berlin Senate Department for Culture and Europe and the German Federal Cultural Foundation (Kulturstiftung des Bundes), and supported by Berlin Postkolonial e.V., Each One Teach One (EOTO) e.V., ISD-Bund e.V., and Stadtmuseum Berlin Foundation as a collaborative civil society initiative."
+    },
+    {
+      "id": "x3",
+      "role": "Communications Team Coordinator (Volunteer)",
+      "company": "Diaspora Action Australia",
+      "type": "Part-time",
+      "dates": "Jul 2016 \u2013 Jan 2017 \u00b7 7 mos",
+      "location": "Melbourne, Victoria, Australia \u00b7 On-site",
+      "description": "Managed a team of volunteers, led weekly meetings, and ensured professional public communications across website, social media, newsletters, and reports aligned with organisational goals. Updated and maintained communication documents, manuals, and databases while working towards advocacy and communications strategies in line with project goals. Liaised with the Director and coordinators on strategy and capacity building for diaspora partners, maintaining high standards in a rights-based human rights-focused NGO."
+    },
+    {
+      "id": "x4",
+      "role": "Sales and Office Coordinator",
+      "company": "UXC Eclipse",
+      "type": "",
+      "dates": "Feb 2016 \u2013 May 2016 \u00b7 4 mos",
+      "location": "Melbourne, Victoria, Australia \u00b7 On-site",
+      "description": "Supported sales teams and the General Manager VIC to deliver \"Intelligent Solutions and Old Fashioned Service,\" while contributing to smooth office operations through contract processing, CRM data entry, and Microsoft Partner Network administration. Provided ad hoc administrative support to the Sales team and Sales Operations Manager, and maintained the Sales SharePoint section to ensure all sales documentation was current. Coordinated office logistics adhering to ISO9001 procedures."
+    },
+    {
+      "id": "x5",
+      "role": "Media Consultant",
+      "company": "IOM \u2013 UN Migration",
+      "type": "Contract",
+      "dates": "Nov 2011 \u2013 Nov 2012 \u00b7 1 yr 1 mo",
+      "location": "Kampala, Central Region, Uganda \u00b7 On-site",
+      "description": "Established the organisation's national media department, coordinated anti-trafficking public education campaigns, and trained journalists on ethical, victim-centred reporting. Led multi-stakeholder communication efforts, liaising with embassies, government agencies, and UN partners while developing multilingual campaigns addressing exploitation and cross-border protection issues. This work strengthened national awareness on trafficking in persons and demonstrated proven expertise in handling sensitive protection content with trauma-informed, rights-based approaches."
+    },
+    {
+      "id": "x6",
+      "role": "Freelance Journalist",
+      "company": "The EastAfrican",
+      "type": "Freelance",
+      "dates": "Feb 2011 \u2013 Oct 2011 \u00b7 9 mos",
+      "location": "Kigali, Kigali City, Rwanda \u00b7 On-site",
+      "description": "As a correspondent for The East African during its Rwanda launch, covered major developments in business, culture, and the creative industries. Reporting included features and in-depth stories that connected regional policy, economic trends, and community impact."
+    },
+    {
+      "id": "x7",
+      "role": "Freelance Journalist",
+      "company": "The Daily Monitor NGR",
+      "type": "Full-time",
+      "dates": "Dec 2005 \u2013 Nov 2011 \u00b7 6 yrs",
+      "location": "Kampala, Central Region, Uganda \u00b7 On-site",
+      "description": "Worked as a regional freelance journalist producing impactful storytelling on governance, human rights, and social issues, amplifying underrepresented voices and shaping public understanding across the region."
+    }
+  ],
+  "projects": [
+    {
+      "id": "p1",
+      "title": "Judge \u2013 Content is Queen Podcast Micro Grant (remote for UK)",
+      "org": "Content is Queen",
+      "dates": "2025",
+      "description": "Content is Queen is a UK-based audio incubator supporting inclusive storytelling by funding, training, and amplifying underrepresented creators. As a 2025 Micro Grant (volunteer) Judge, assessed up to 50 podcast proposals, scoring submissions using originality, impact, feasibility, and intrigue criteria, and selected the top applications to be considered for funding, studio support, and the opportunity to pitch to Audible.",
+      "link": "",
+      "image": ""
+    },
+    {
+      "id": "p2",
+      "title": "Editor \u2013 WCAPS Pipeline Fellowship (remote for USA)",
+      "org": "Women of Color Advancing Peace, Security & Conflict Transformation (WCAPS)",
+      "dates": "2025",
+      "description": "WCAPS is a global organisation advancing the leadership and expertise of women of colour in international affairs. As an Editor (volunteer) for the Pipeline Fellowship, reviewed policy and research paper submissions, providing detailed developmental edits on strengthening clarity, structure, and policy relevance, ensuring submissions met WCAPS' editorial standards while preserving the author's authentic voice.",
+      "link": "",
+      "image": ""
+    },
+    {
+      "id": "p3",
+      "title": "Crowdfunded project (tuition for Oxford)",
+      "org": "",
+      "dates": "Sep 2017 \u2013 Oct 2017",
+      "description": "Crowdfunded tuition for postgraduate study at the University of Oxford.",
+      "link": "",
+      "image": ""
+    }
+  ],
+  "publications": [
+    {
+      "id": "pub1",
+      "title": "\"The children's hospital of Entebbe\" a BBC World Service documentary",
+      "publisher": "",
+      "date": "Oct 21, 2024",
+      "description": "Until 2021, Uganda had only four paediatric surgeons and just a few children's hospital beds for the entire country.",
+      "link": ""
+    },
+    {
+      "id": "pub2",
+      "title": "Skills for a Digital Age for Uganda's Young Creatives",
+      "publisher": "Mastercard Foundation",
+      "date": "Dec 29, 2023",
+      "description": "This report shares findings from the primary research conducted with creatives, experts, and policymakers to support inclusive creative sector development in Uganda.",
+      "link": ""
+    },
+    {
+      "id": "pub3",
+      "title": "Short on strategy: WhatsApp use in the Ugandan elections",
+      "publisher": "",
+      "date": "Jan 11, 2021",
+      "description": "",
+      "link": ""
+    }
+  ],
+  "headline": "Clear Stories. Real Impact.",
+  "headlineHighlight": "Impact",
+  "ctaText": "LET'S CONNECT",
+  "socials": {
+    "linkedin": "",
+    "instagram": "",
+    "twitter": ""
+  }
+}
