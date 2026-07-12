@@ -6,9 +6,16 @@
 <title>Portfolio</title>
 <style>
   * { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; scroll-snap-type:y proximity; }
   body { font-family:'Segoe UI', Arial, sans-serif; color:#2c2115; background:#fdf6f0; }
   a { color:inherit; text-decoration:none; }
   h1, h2, h3 { font-family:Georgia, 'Times New Roman', serif; }
+
+  section, footer.contact, .hero { scroll-snap-align:start; scroll-snap-stop:normal; }
+
+  /* Reveal-on-scroll (fade + slide up) */
+  .reveal { opacity:0; transform:translateY(42px); transition:opacity .9s cubic-bezier(.16,.8,.24,1), transform .9s cubic-bezier(.16,.8,.24,1); will-change:opacity, transform; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
 
   /* Header */
   header { background:#c1613f; padding:18px 48px; display:flex; justify-content:space-between; align-items:center; }
@@ -170,6 +177,30 @@
 </footer>
 
 <script>
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+function reveal(el, delayMs = 0) {
+  el.classList.add('reveal');
+  if (delayMs) el.style.transitionDelay = delayMs + 'ms';
+  revealObserver.observe(el);
+}
+
+// static elements already in the DOM before content loads
+reveal(document.querySelector('.hero-text'));
+reveal(document.querySelector('.hero-image'), 150);
+reveal(document.querySelector('.about .icon-circle'));
+reveal(document.querySelector('.about > div:last-child'), 120);
+document.querySelectorAll('.section-title').forEach(el => reveal(el));
+reveal(document.querySelector('.contact-inner > div:first-child'));
+reveal(document.querySelector('.contact-inner > div.connect'), 150);
+
 async function load() {
   const res = await fetch('content.json?t=' + Date.now());
   const data = await res.json();
@@ -198,11 +229,12 @@ async function load() {
 
   const skillsEl = document.getElementById('skills');
   skillsEl.innerHTML = '';
-  (data.skills || []).forEach(s => {
+  (data.skills || []).forEach((s, i) => {
     const pill = document.createElement('span');
     pill.className = 'skill-pill';
     pill.textContent = s.name;
     skillsEl.appendChild(pill);
+    reveal(pill, (i % 6) * 60);
   });
   document.getElementById('skillsSection').style.display = (data.skills || []).length ? '' : 'none';
 
@@ -221,12 +253,13 @@ async function load() {
       </div>
     `;
     projEl.appendChild(card);
+    reveal(card, (i % 2) * 100);
   });
   document.getElementById('projectsSection').style.display = (data.projects || []).length ? '' : 'none';
 
   const pubEl = document.getElementById('publications');
   pubEl.innerHTML = '';
-  (data.publications || []).forEach(pub => {
+  (data.publications || []).forEach((pub, i) => {
     const card = document.createElement('div');
     card.className = 'list-card';
     card.innerHTML = `
@@ -236,12 +269,13 @@ async function load() {
       ${pub.link ? `<a class="link" href="${pub.link}" target="_blank">View publication ↗</a>` : ''}
     `;
     pubEl.appendChild(card);
+    reveal(card, (i % 4) * 70);
   });
   document.getElementById('publicationsSection').style.display = (data.publications || []).length ? '' : 'none';
 
   const expEl = document.getElementById('experience');
   expEl.innerHTML = '';
-  (data.experience || []).forEach(x => {
+  (data.experience || []).forEach((x, i) => {
     const card = document.createElement('div');
     card.className = 'list-card';
     card.innerHTML = `
@@ -250,12 +284,13 @@ async function load() {
       <p>${x.description || ''}</p>
     `;
     expEl.appendChild(card);
+    reveal(card, (i % 4) * 70);
   });
   document.getElementById('experienceSection').style.display = (data.experience || []).length ? '' : 'none';
 
   const eduEl = document.getElementById('education');
   eduEl.innerHTML = '';
-  (data.education || []).forEach(e => {
+  (data.education || []).forEach((e, i) => {
     const card = document.createElement('div');
     card.className = 'list-card';
     card.innerHTML = `
@@ -263,6 +298,7 @@ async function load() {
       <div class="sub">${e.degree || ''}</div>
     `;
     eduEl.appendChild(card);
+    reveal(card, (i % 4) * 70);
   });
   document.getElementById('educationSection').style.display = (data.education || []).length ? '' : 'none';
 
