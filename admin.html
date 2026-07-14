@@ -20,19 +20,54 @@
   button.main { padding:11px 18px; border:none; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; }
   .add-btn { background:#d9c78f; }
   #save { background:#1a1a1a; color:#fff; }
+  #publish { background:#2d6a3e; color:#fff; }
   #status { margin-top:12px; font-size:13px; color:#2d6a3e; }
+  #status.error { color:#b3261e; }
   a.back { display:inline-block; margin-bottom:14px; font-size:13px; color:#555; }
   .section-title { margin-top:32px; font-size:17px; border-bottom:2px solid #d9c78f; padding-bottom:8px; }
   .avatar-row { display:flex; align-items:center; gap:14px; margin-top:6px; }
   .avatar-preview { width:70px; height:70px; border-radius:50%; object-fit:cover; background:#eee; border:1px solid #ddd; }
   .skill-row { display:flex; gap:8px; align-items:center; margin-top:6px; }
+  .gh-panel { border:1px solid #cfe6d4; background:#f2faf3; padding:16px; border-radius:8px; margin-bottom:24px; }
+  .gh-panel .hint { font-size:12px; color:#557; margin-top:8px; line-height:1.6; }
+  .gh-grid { display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
 </style>
 </head>
 <body>
 
 <a class="back" href="index.html">&larr; Back to site</a>
 <h1>Admin — Edit Portfolio</h1>
-<div class="sub">Edits are downloaded as content.json. Replace the file in your site folder (and re-upload to GitHub) to publish.</div>
+<div class="sub">Fill in your GitHub details once below, then use "Publish to GitHub" to save changes directly — no manual download/upload needed.</div>
+
+<div class="gh-panel">
+  <label style="margin-top:0;">GitHub Connection</label>
+  <div class="gh-grid">
+    <div>
+      <label>Username</label>
+      <input type="text" id="ghOwner" placeholder="e.g. curtis-k">
+    </div>
+    <div>
+      <label>Repository name</label>
+      <input type="text" id="ghRepo" placeholder="e.g. my-portfolio">
+    </div>
+  </div>
+  <div class="gh-grid">
+    <div>
+      <label>Branch</label>
+      <input type="text" id="ghBranch" placeholder="main" value="main">
+    </div>
+    <div>
+      <label>Personal Access Token</label>
+      <input type="text" id="ghToken" placeholder="github_pat_...">
+    </div>
+  </div>
+  <div class="hint">
+    Create a token at github.com → Settings → Developer settings → Personal access tokens →
+    Fine-grained tokens. Scope it to <strong>only this repository</strong>, with
+    <strong>Contents: Read and write</strong> permission. Your token is stored only in this
+    browser (localStorage) and sent directly to GitHub's API — never to us.
+  </div>
+</div>
 
 <label>Hero / Profile Image</label>
 <div class="avatar-row">
@@ -87,7 +122,8 @@
 <div class="actions"><button class="main add-btn" id="addEducation">+ Add Education</button></div>
 
 <div class="actions">
-  <button class="main" id="save">Download content.json</button>
+  <button class="main" id="publish">Publish to GitHub</button>
+  <button class="main" id="save">Download content.json instead</button>
 </div>
 <div id="status"></div>
 
@@ -106,6 +142,18 @@ function fileToDataURL(file) {
 }
 
 async function load() {
+  // restore GitHub connection settings from this browser
+  document.getElementById('ghOwner').value = localStorage.getItem('gh_owner') || '';
+  document.getElementById('ghRepo').value = localStorage.getItem('gh_repo') || '';
+  document.getElementById('ghBranch').value = localStorage.getItem('gh_branch') || 'main';
+  document.getElementById('ghToken').value = localStorage.getItem('gh_token') || '';
+  ['ghOwner','ghRepo','ghBranch','ghToken'].forEach(id => {
+    document.getElementById(id).addEventListener('input', (e) => {
+      const key = { ghOwner:'gh_owner', ghRepo:'gh_repo', ghBranch:'gh_branch', ghToken:'gh_token' }[id];
+      localStorage.setItem(key, e.target.value);
+    });
+  });
+
   const res = await fetch('content.json?t=' + Date.now());
   data = await res.json();
   document.getElementById('name').value = data.name || '';
@@ -339,13 +387,91 @@ function collect() {
   document.querySelectorAll('.e-years').forEach(el => data.education[+el.dataset.i].years = el.value);
 }
 
+function utf8ToBase64(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+
+function setStatus(msg, isError = false) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = isError ? 'error' : '';
+}
+
+async function publishToGitHub() {
+  collect();
+  const owner = document.getElementById('ghOwner').value.trim();
+  const repo = document.getElementById('ghRepo').value.trim();
+  const branch = document.getElementById('ghBranch').value.trim() || 'main';
+  const token = document.getElementById('ghToken').value.trim();
+
+  if (!owner || !repo || !token) {
+    setStatus('Fill in your GitHub username, repository name, and token first.', true);
+    return;
+  }
+
+  const btn = document.getElementById('publish');
+  btn.disabled = true;
+  btn.textContent = 'Publishing…';
+  setStatus('Checking current file on GitHub…');
+
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/content.json`;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    Accept: 'application/vnd.github+json',
+  };
+
+  try {
+    // fetch current file sha (needed to update an existing file); omit if file doesn't exist yet
+    let sha = undefined;
+    const getRes = await fetch(`${apiUrl}?ref=${encodeURIComponent(branch)}`, { headers });
+    if (getRes.status === 200) {
+      const getBody = await getRes.json();
+      sha = getBody.sha;
+    } else if (getRes.status !== 404) {
+      const errBody = await getRes.json().catch(() => ({}));
+      throw new Error(errBody.message || `GitHub returned ${getRes.status} while checking the file`);
+    }
+
+    setStatus('Uploading changes…');
+    const content = utf8ToBase64(JSON.stringify(data, null, 2));
+
+    const putRes = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: 'Update portfolio content via admin panel',
+        content,
+        branch,
+        ...(sha ? { sha } : {}),
+      }),
+    });
+
+    if (!putRes.ok) {
+      const errBody = await putRes.json().catch(() => ({}));
+      throw new Error(errBody.message || `GitHub returned ${putRes.status} while saving`);
+    }
+
+    setStatus('Published! GitHub Pages will rebuild in about a minute — refresh your live site shortly.');
+  } catch (err) {
+    setStatus('Failed to publish: ' + err.message + ' — check your username, repo name, branch, and token permissions.', true);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Publish to GitHub';
+  }
+}
+
+document.getElementById('publish').onclick = publishToGitHub;
+
 document.getElementById('save').onclick = () => {
   collect();
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url; a.download = 'content.json'; a.click();
-  document.getElementById('status').textContent = 'Downloaded — replace content.json in your site folder, then commit & push.';
+  setStatus('Downloaded — replace content.json in your site folder, then commit & push.');
 };
 
 load();
