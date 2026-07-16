@@ -16,11 +16,7 @@
     },
     {
       "id": "s4",
-      "name": "Stakeholder Engagement"
-    },
-    {
-      "id": "s5",
-      "name": "Strategic Communications"
+      "name": "Stakeholder Engagement & Coordination "
     },
     {
       "id": "s7",
@@ -29,14 +25,6 @@
     {
       "id": "s8",
       "name": "Media Relations & Source Development"
-    },
-    {
-      "id": "s9",
-      "name": "Research & Writing"
-    },
-    {
-      "id": "s10",
-      "name": "Afro-Diaspora Advocacy"
     },
     {
       "id": "s11",
@@ -49,6 +37,10 @@
     {
       "id": "id1000",
       "name": "Investigative Research & Reporting "
+    },
+    {
+      "id": "id1003",
+      "name": "Policy Analysis"
     }
   ],
   "education": [
