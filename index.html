@@ -95,9 +95,37 @@
     background:linear-gradient(140deg, var(--terracotta-soft), var(--terracotta) 70%);
     filter:blur(2px);
   }
+  /* Hero */
+  .hero { position:relative; display:grid; grid-template-columns:1.05fr 0.95fr; align-items:center; gap:40px; padding:64px 48px 90px; max-width:1280px; margin:0 auto; overflow:visible; }
+  .hero-text .eyebrow {
+    display:inline-flex; align-items:center; gap:8px;
+    color:var(--terracotta-deep); font-size:11.5px; font-weight:700; letter-spacing:1.5px;
+    background:var(--terracotta-soft); padding:8px 16px 8px 12px; border-radius:100px; margin-bottom:24px;
+  }
+  .hero-text .eyebrow::before { content:''; width:7px; height:7px; border-radius:50%; background:var(--terracotta-deep); display:inline-block; }
+  .hero-text h1 { font-size:clamp(38px, 5.5vw, 66px); line-height:1.06; font-weight:600; color:var(--ink); margin-bottom:22px; }
+  .hero-text h1 .highlight { color:var(--terracotta); font-style:italic; font-weight:500; }
+  .hero-text p { font-size:16px; color:var(--muted); line-height:1.75; max-width:440px; margin-bottom:32px; }
+  .hero-text .cta {
+    display:inline-flex; align-items:center; gap:10px;
+    background:var(--ink); color:#fff; font-size:13px; font-weight:700; letter-spacing:0.3px;
+    padding:16px 28px; border-radius:100px; transition:transform .3s var(--ease), background .3s var(--ease);
+  }
+  .hero-text .cta:hover { background:var(--terracotta-deep); transform:translateY(-2px); }
+  .hero-text .cta::after { content:'→'; transition:transform .3s var(--ease); }
+  .hero-text .cta:hover::after { transform:translateX(3px); }
+ 
+  .hero-image-wrap { position:relative; }
+  .hero-image-wrap::before {
+    content:''; position:absolute; inset:-5%; z-index:0; border-radius:62% 38% 55% 45% / 48% 55% 45% 52%;
+    background:linear-gradient(140deg, var(--terracotta-soft), var(--terracotta) 70%);
+    filter:blur(18px); opacity:0.85;
+  }
   .hero-image {
-    position:relative; z-index:1; aspect-ratio:4/4.6; border-radius:var(--radius-lg);
+    position:relative; z-index:1; aspect-ratio:4/4.6;
+    border-radius:62% 38% 55% 45% / 48% 55% 45% 52%;
     overflow:hidden; box-shadow:0 30px 60px -20px rgba(143,63,38,0.35);
+    transition:border-radius .6s var(--ease);
   }
   .hero-image img { width:100%; height:100%; object-fit:cover; display:block; }
   .hero-image .placeholder { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; color:#fff; font-size:12px; letter-spacing:1.5px; text-align:center; gap:10px; background:linear-gradient(160deg, rgba(255,255,255,0.15), rgba(0,0,0,0.05)); }
